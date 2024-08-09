@@ -23,7 +23,7 @@ static char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
+static const char *tags[] = { "", "🌐", "", "", "", "", "", "", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -104,6 +104,8 @@ static Key keys[] = {
 	{ MODKEY,			XK_equal,  setgaps,	   {.i = +1 } },
 	{ MODKEY|ShiftMask,		XK_equal,  setgaps,	   {.i =  0 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
+	{ 0,                            XF86XK_MonBrightnessUp,   spawn,          SHCMD("xbacklight -inc 10") },
+	{ 0,                            XF86XK_MonBrightnessDown, spawn,          SHCMD("xbacklight -dec 10") },
 	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
 	{ 0,                            XF86XK_AudioMute,        spawn, {.v = mutevol } },
 	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
