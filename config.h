@@ -86,6 +86,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_g,      togglebar,      {0} },
 	{ MODKEY,                       XK_z,	   zoom,           {0} },
 	{ MODKEY,			XK_c,      spawn,          {.v = calcmd } },
+	{ MODKEY,			XK_n,      spawn,          SHCMD("nemo") },
+	{ MODKEY,			XK_t,      spawn,          SHCMD("nautilus") },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_s,      incnmaster,     {.i = +1 } },
 	{ MODKEY,		        XK_q,      killclient,     {0} },
