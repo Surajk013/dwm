@@ -99,6 +99,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 	{ MODKEY,			XK_x, 	   spawn,          {.v = termcmd } },
 	{ MODKEY,			XK_Return, 	   spawn,          {.v = termst } },
+	{ MODKEY|ControlMask,           XK_s,      spawn,          SHCMD("systemctl suspend") },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
