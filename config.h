@@ -36,8 +36,9 @@ static const Rule rules[] = {
 	{ "obs",                NULL,     NULL,           0,         1,          0,           0,        -1 },
 	{ "Lutris",             NULL,     NULL,           0,         1,          0,           0,        -1 },
 	{ "firefox",   		NULL,     NULL,           1 << 2,    0,          0,          -1,        -1 },
-	{ "St",                 NULL,     NULL,           0,         1,          1,           0,        -1 },
-	{ "gnome-calculator",                 NULL,     NULL,           0,         1,          1,           0,        -1 },
+	{ "St",                 NULL,     NULL,           0,         0,          1,           0,        -1 },
+	{ "gnome-calculator",   NULL,     NULL,           0,         1,          1,           0,        -1 },
+	{ "magnus",		NULL,     NULL,           0,         1,          1,           0,        -1 },
 	{ "kitty",		NULL,     NULL,           0,         0,          1,           0,        -1 },
 	{ NULL,                 NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
@@ -52,6 +53,7 @@ static const char *upvol[] = { "sh", "-c", "pactl set-sink-mute @DEFAULT_SINK@ 0
 static const char *downvol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-1%", NULL };
 static const char *mutevol[] = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
 static const char *calcmd[]  = { "gnome-calculator" , NULL };
+static const char *sss[] = { "sss" , NULL  };
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -87,6 +89,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_z,	   zoom,           {0} },
 	{ MODKEY,			XK_c,      spawn,          {.v = calcmd } },
 	{ MODKEY,			XK_n,      spawn,          SHCMD("nemo") },
+	{ MODKEY|ShiftMask,		XK_v,      spawn,          SHCMD("chis") },
+	{ MODKEY|ShiftMask,		XK_z,      spawn,          SHCMD("magnus") },
 	{ MODKEY,			XK_t,      spawn,          SHCMD("nautilus") },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_s,      incnmaster,     {.i = +1 } },
@@ -111,11 +115,15 @@ static Key keys[] = {
 	{ MODKEY,			XK_equal,  setgaps,	   {.i = +1 } },
 	{ MODKEY|ShiftMask,		XK_equal,  setgaps,	   {.i =  0 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
-	{ 0,                            XF86XK_MonBrightnessUp,   spawn,          SHCMD("brightnessctl set +1%") },
-	{ 0,                            XF86XK_MonBrightnessDown, spawn,          SHCMD("brightnessctl set 1%-") },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
-	{ 0,                            XF86XK_AudioMute,        spawn, {.v = mutevol } },
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+	{ 0,                            XF86XK_MonBrightnessUp,   spawn, SHCMD("brightnessctl set +1%") },
+	{ 0,                            XF86XK_MonBrightnessDown, spawn, SHCMD("brightnessctl set 1%-") },
+	{ 0,                            XF86XK_AudioLowerVolume,  spawn, {.v = downvol } },
+	{ 0,                            XF86XK_AudioMute,         spawn, {.v = mutevol } },
+	{ 0,                            XF86XK_AudioRaiseVolume,  spawn, {.v = upvol   } },
+	{ 0,                             XK_Print,         	  spawn, {.v = mutevol } }, // Print Screen
+	{ 0,                             XK_Scroll_Lock,   	  spawn, {.v = downvol } }, // Scroll Lock
+	{ 0,                             XK_Pause,         	  spawn, {.v = upvol } },  // Pause/Break
+	{ControlMask, 			XK_Print, 		  spawn, {.v = sss} }, // screenshot
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
