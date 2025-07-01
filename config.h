@@ -23,24 +23,27 @@ static char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "","🌐","🖥️","< >","</ >","🎮" };
+static const char *tags[] = { "📅","🌐","</>","🖥️","✏️","🎮" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class                instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "TelegramDesktop",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "whatsapp-for-linux", NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "obs",                NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "Lutris",             NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "firefox",   		NULL,     NULL,           1 << 2,    0,          0,          -1,        -1 },
-	{ "St",                 NULL,     NULL,           0,         0,          1,           0,        -1 },
-	{ "gnome-calculator",   NULL,     NULL,           0,         1,          1,           0,        -1 },
-	{ "magnus",		NULL,     NULL,           0,         1,          1,           0,        -1 },
-	{ "kitty",		NULL,     NULL,           0,         0,          1,           0,        -1 },
-	{ NULL,                 NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	/* class                        instance   title         tags mask  isfloating  isterminal  noswallow  monitor */
+	{ "TelegramDesktop",              NULL,     NULL,           0,         1,          0,           0,        -1 },
+	{ "whatsapp-for-linux",           NULL,     NULL,           0,         1,          0,           0,        -1 },
+	{ "obs",                          NULL,     NULL,           1<<3,      0,          0,           0,        -1 },
+	{ "Lutris",                       NULL,     NULL,           0,         1,          0,           0,        -1 },
+	{ "firefox",   		                NULL,     NULL,           1<<2,      0,          0,          -1,        -1 },
+	{ "St",                           NULL,     NULL,           0,         0,          1,           0,        -1 },
+	{ "gnome-calculator",             NULL,     NULL,           0,         1,          1,           0,        -1 },
+	{ "magnus",		                    NULL,     NULL,           0,         1,          1,           0,        -1 },
+	{ "kitty",		                    NULL,     NULL,           1<<2,      0,          1,           1,        -1 },
+	{ "Google-chrome",      		      NULL,     NULL,           1<<1,      0,          0,           0,        -1 },
+	{ "ONLYOFFICE",		                NULL,     NULL,           1<<0,      0,          0,           0,        -1 },
+	{ "kdenlive",		                  NULL,     NULL,           1<<4,      0,          0,           0,        -1 },
+	{  NULL,                          NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
 
 /* layout(s) */
@@ -59,7 +62,7 @@ static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ "[M]",      monocle }, // Each app takes the whole screen while the earlier one hides behind 
 };
 
 /* key definitions */
@@ -100,6 +103,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY|ShiftMask,             XK_r,  	   togglefloating, {0} },
 	{ MODKEY,                       XK_t,  	   setlayout,      {0} },
+  { MODKEY,                       XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
 	{ MODKEY,			XK_x, 	   spawn,          {.v = termcmd } },
 	{ MODKEY,			XK_Return, 	   spawn,          {.v = termst } },
@@ -124,15 +128,16 @@ static Key keys[] = {
 	{ 0,                             XK_Scroll_Lock,   	  spawn, {.v = downvol } }, // Scroll Lock
 	{ 0,                             XK_Pause,         	  spawn, {.v = upvol } },  // Pause/Break
 	{ControlMask, 			XK_Print, 		  spawn, {.v = sss} }, // screenshot
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_KP_End,                      0)
+	TAGKEYS(                        XK_KP_Down,                      1)
+	TAGKEYS(                        XK_KP_Next,                      2)
+	TAGKEYS(                        XK_KP_Left,                      3)
+	TAGKEYS(                        XK_KP_Begin,                      4)
+	TAGKEYS(                        XK_KP_Right,                      5)
+	TAGKEYS(                        XK_KP_Home,                      6)
+	TAGKEYS(                        XK_KP_Up,                      7)
+	TAGKEYS(                        XK_KP_Prior,                      8)
+	TAGKEYS(                        XK_KP_Insert,                      9)
 	{ MODKEY|ShiftMask,		XK_q,      quit,           {0} },
 };
 
