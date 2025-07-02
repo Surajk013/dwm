@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h>
 
+
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 3;        /* gaps between windows */
@@ -24,6 +25,21 @@ static char *colors[][3] = {
 
 /* tagging */
 static const char *tags[] = { "📅","🌐","</>","🖥️","✏️","🎮" };
+
+void view_adjacent(const Arg *arg) {
+	int i, curtag = -1;
+	for (i = 0; i < LENGTH(tags); i++) {
+		if (selmon->tagset[selmon->seltags] & (1 << i)) {
+			curtag = i;
+			break;
+		}
+	}
+	if (curtag >= 0) {
+		int newtag = (curtag + arg->i + LENGTH(tags)) % LENGTH(tags);
+		const Arg a = {.ui = 1 << newtag};
+		view(&a);
+	}
+}
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -83,78 +99,79 @@ static const char *termcmd[]  = { "kitty", NULL };
 static const char *termst[]  = { "st", NULL };
 
 static Key keys[] = {
-	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_g,      togglebar,      {0} },
-	{ MODKEY,                       XK_z,	   zoom,           {0} },
-	{ MODKEY,			XK_c,      spawn,          {.v = calcmd } },
-	{ MODKEY,			XK_n,      spawn,          SHCMD("nemo") },
-	{ MODKEY|ShiftMask,		XK_v,      spawn,          SHCMD("chis") },
-	{ MODKEY|ShiftMask,		XK_z,      spawn,          SHCMD("magnus") },
-	{ MODKEY,			XK_t,      spawn,          SHCMD("nautilus") },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_s,      incnmaster,     {.i = +1 } },
-	{ MODKEY,		        XK_q,      killclient,     {0} },
-	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY|ShiftMask,             XK_r,  	   togglefloating, {0} },
-	{ MODKEY,                       XK_t,  	   setlayout,      {0} },
-  { MODKEY,                       XK_f,      togglefullscr,  {0} },
-	{ MODKEY,                       XK_space,  spawn,          {.v = dmenucmd } },
-	{ MODKEY,			XK_x, 	   spawn,          {.v = termcmd } },
-	{ MODKEY,			XK_Return, 	   spawn,          {.v = termst } },
-	{ MODKEY|ControlMask,           XK_s,      spawn,          SHCMD("systemctl suspend") },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,			XK_minus,  setgaps,	   {.i = -1 } },
-	{ MODKEY,			XK_equal,  setgaps,	   {.i = +1 } },
-	{ MODKEY|ShiftMask,		XK_equal,  setgaps,	   {.i =  0 } },
-	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
-	{ 0,                            XF86XK_MonBrightnessUp,   spawn, SHCMD("brightnessctl set +1%") },
-	{ 0,                            XF86XK_MonBrightnessDown, spawn, SHCMD("brightnessctl set 1%-") },
-	{ 0,                            XF86XK_AudioLowerVolume,  spawn, {.v = downvol } },
-	{ 0,                            XF86XK_AudioMute,         spawn, {.v = mutevol } },
-	{ 0,                            XF86XK_AudioRaiseVolume,  spawn, {.v = upvol   } },
-	{ 0,                             XK_Print,         	  spawn, {.v = mutevol } }, // Print Screen
-	{ 0,                             XK_Scroll_Lock,   	  spawn, {.v = downvol } }, // Scroll Lock
-	{ 0,                             XK_Pause,         	  spawn, {.v = upvol } },  // Pause/Break
-	{ControlMask, 			XK_Print, 		  spawn, {.v = sss} }, // screenshot
-	TAGKEYS(                        XK_KP_End,                      0)
-	TAGKEYS(                        XK_KP_Down,                      1)
-	TAGKEYS(                        XK_KP_Next,                      2)
-	TAGKEYS(                        XK_KP_Left,                      3)
-	TAGKEYS(                        XK_KP_Begin,                      4)
-	TAGKEYS(                        XK_KP_Right,                      5)
-	TAGKEYS(                        XK_KP_Home,                      6)
-	TAGKEYS(                        XK_KP_Up,                      7)
-	TAGKEYS(                        XK_KP_Prior,                      8)
-	TAGKEYS(                        XK_KP_Insert,                      9)
-	{ MODKEY|ShiftMask,		XK_q,      quit,           {0} },
+	/* modifier                           key               function                           argument */
+	{ MODKEY,                             XK_l,             setmfact,                        {.f = +0.05} },
+	{ MODKEY,                             XK_k,           focusstack,                          {.i = -1 } },
+	{ MODKEY,                             XK_j,           focusstack,                          {.i = +1 } },
+	{ MODKEY,                             XK_h,             setmfact,                        {.f = -0.05} },
+	{ MODKEY,                             XK_g,            togglebar,                                 {0} },
+	{ MODKEY,                             XK_z,                 zoom,                                 {0} },
+	{ MODKEY,	                  		      XK_c,                spawn,                      {.v = calcmd } },
+	{ MODKEY,			                        XK_n,                spawn,                       SHCMD("nemo") },
+	{ MODKEY|ShiftMask,         		      XK_v,                spawn,                       SHCMD("chis") },
+	{ MODKEY|ShiftMask,		                XK_z,                spawn,                     SHCMD("magnus") },
+	{ MODKEY,		                  	      XK_t,                spawn,                   SHCMD("nautilus") },
+	{ MODKEY,                             XK_d,           incnmaster,                          {.i = -1 } },
+	{ MODKEY,                             XK_s,           incnmaster,                          {.i = +1 } },
+	{ MODKEY,		                          XK_q,           killclient,                                 {0} },
+	{ MODKEY,                             XK_w,            setlayout,                  {.v = &layouts[0]} },
+	{ MODKEY,                             XK_e,            setlayout,                  {.v = &layouts[1]} },
+	{ MODKEY,                             XK_r,            setlayout,                  {.v = &layouts[2]} },
+	{ MODKEY|ShiftMask,                   XK_r,  	    togglefloating,                                 {0} },
+	{ MODKEY,                             XK_t,  	         setlayout,                                 {0} },
+  { MODKEY,                             XK_f,        togglefullscr,                                 {0} },
+	{ MODKEY,                         XK_space,                spawn,                    {.v = dmenucmd } },
+	{ MODKEY,			                         XK_x,          	   spawn,                     {.v = termcmd } },
+	{ MODKEY,			                    XK_Return,               spawn,                      {.v = termst } },
+	{ MODKEY|ControlMask,                  XK_s,               spawn,          SHCMD("systemctl suspend") },
+	{ MODKEY,                            XK_Tab,                view,                                 {0} },
+	{ MODKEY,                              XK_0,                view,                         {.ui = ~0 } },
+	{ MODKEY|ShiftMask,                    XK_0,                 tag,                         {.ui = ~0 } },
+	{ MODKEY,                          XK_comma,            focusmon,                          {.i = -1 } },
+	{ MODKEY,                         XK_period,            focusmon,                          {.i = +1 } },
+	{ MODKEY|ShiftMask,                XK_comma,              tagmon,                          {.i = -1 } },
+	{ MODKEY|ShiftMask,                XK_period,             tagmon,                          {.i = +1 } },
+	{ MODKEY,			                      XK_minus,            setgaps,	                         {.i = -1 } },
+	{ MODKEY,			                      XK_equal,            setgaps,	                         {.i = +1 } },
+	{ MODKEY|ShiftMask,		              XK_equal,            setgaps,	                         {.i =  0 } },
+  { MODKEY,                           XK_Right,      view_adjacent,                          {.i = +1 } },
+  { MODKEY,                            XK_Left,      view_adjacent,                          {.i = -1 } },
+	{ MODKEY,                              XK_F5,               xrdb,                        {.v = NULL } },
+	{ 0,                  XF86XK_MonBrightnessUp,              spawn,       SHCMD("brightnessctl set +1%") },
+	{ 0,                XF86XK_MonBrightnessDown,              spawn,       SHCMD("brightnessctl set 1%-") },
+	{ 0,                 XF86XK_AudioLowerVolume,              spawn,                      {.v = downvol } },
+	{ 0,                        XF86XK_AudioMute,              spawn,                      {.v = mutevol } },
+	{ 0,                 XF86XK_AudioRaiseVolume,              spawn,                      {.v = upvol   } },
+	{ 0,                                XK_Print,              spawn,                      {.v = mutevol } }, // Print Screen
+	{ 0,                          XK_Scroll_Lock,   	         spawn,                      {.v = downvol } }, // Scroll Lock
+	{ 0,                                XK_Pause,         	   spawn,                        {.v = upvol } },  // Pause/Break
+	{ControlMask, 			                XK_Print, 		         spawn,                           {.v = sss} }, // screenshot
+	TAGKEYS(                           XK_KP_End,                                                         0)
+  TAGKEYS(                          XK_KP_Down,                                                         1)
+	TAGKEYS(                          XK_KP_Next,                                                         2)
+  TAGKEYS(                          XK_KP_Left,                                                         3)
+	TAGKEYS(                         XK_KP_Begin,                                                         4)
+  TAGKEYS(                         XK_KP_Right,                                                         5)
+	TAGKEYS(                          XK_KP_Home,                                                         6)
+  TAGKEYS(                            XK_KP_Up,                                                         7)
+	TAGKEYS(                         XK_KP_Prior,                                                         8)
+  TAGKEYS(                        XK_KP_Insert,                                                         9)
+	{ MODKEY|ShiftMask,                 		XK_q,              quit,                                   {0} },
 };
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
-	/* click                event mask      button          function        argument */
-	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
-	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
-	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+/* click                event mask      button          function        argument */
+  { ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
+  { ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+  { ClkWinTitle,          0,              Button2,        zoom,           {0} },
+  { ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+  { ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
+  { ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
+  { ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+  { ClkTagBar,            0,              Button1,        view,           {0} },
+  { ClkTagBar,            0,              Button3,        toggleview,     {0} },
+  { ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
+  { ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
