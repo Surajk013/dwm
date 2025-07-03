@@ -100,10 +100,11 @@ static const char *termst[]  = { "st", NULL };
 
 static Key keys[] = {
 	/* modifier                           key               function                           argument */
-	{ MODKEY,                             XK_l,             setmfact,                        {.f = +0.05} },
+	{ MODKEY|ControlMask,                 XK_l,                spawn,                SHCMD("xsecurelock") },
 	{ MODKEY,                             XK_k,           focusstack,                          {.i = -1 } },
 	{ MODKEY,                             XK_j,           focusstack,                          {.i = +1 } },
 	{ MODKEY,                             XK_h,             setmfact,                        {.f = -0.05} },
+	{ MODKEY,                             XK_l,             setmfact,                        {.f = +0.05} },
 	{ MODKEY,                             XK_g,            togglebar,                                 {0} },
 	{ MODKEY,                             XK_z,                 zoom,                                 {0} },
 	{ MODKEY,	                  		      XK_c,                spawn,                      {.v = calcmd } },
