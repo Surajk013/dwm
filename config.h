@@ -146,7 +146,7 @@ static Key keys[] = {
 	{ 0,                                XK_Print,              spawn,                      {.v = mutevol } }, // Print Screen
 	{ 0,                          XK_Scroll_Lock,   	         spawn,                      {.v = downvol } }, // Scroll Lock
 	{ 0,                                XK_Pause,         	   spawn,                        {.v = upvol } },  // Pause/Break
-	{ControlMask, 			                XK_Print, 		         spawn,                           {.v = sss} }, // screenshot
+	{MODKEY|ControlMask, 			          XK_Print, 		         spawn,                           {.v = sss} }, // screenshot
 	TAGKEYS(                           XK_KP_End,                                                         0)
   TAGKEYS(                          XK_KP_Down,                                                         1)
 	TAGKEYS(                          XK_KP_Next,                                                         2)
